@@ -1,19 +1,45 @@
-const Images = require('../models/file.model')
-const sharp = require('sharp')
+const upload = require("../middleware/midde");
+const MongoClient = require("mongodb").MongoClient;
+const GridFSBucket = require("mongodb").GridFSBucket;
+const url = "mongodb://localhost:27017/"
+const baseUrl = "http://localhost:8080/files/";
+const mongoClient = new MongoClient(url);
+     exports.uploadFiles = async (req, res) => {
+        try {
+            await upload(req, res);
+            console.log(req.file);
+            if (req.file == undefined) {
+                return res.send({
+                    message: "You must select a file.",
+                });
+            }
+            return res.send({
+                message: "File has been uploaded.",
+            });
+        } catch (error) {
+            console.log(error);
+            return res.send({
+                message: "Error when trying upload image: ${error}",
+            });
+        }
+    };
+    
+exports.getListFiles = async (req, res) => {
+    try {
+        const database = mongoClient.db(process.env.database);
+        const images = database.collection(process.env.imgBucket + ".chunks");
+        const cursor =  await images.find({});
+        let fileInfos = [];
+        await cursor.forEach((doc) => {
+            fileInfos.push({
+                data: doc.data
+            });
+        });
 
-exports.uploadimage =  async (req, res) => {
-    const buffer =  await sharp(req.file.buffer).resize(500,500).png().toBuffer()
-    const image = new Images({file:buffer})
-    image.save().then((data) => {
-        res.status(200).send(data)
-    }).catch(err => {
-        res.status(404).send("there is probelm")
-    })
-}
-exports.getimage = (req, res) => {
-    Images.findById(req.params.id).then((data) => {
-        res.set('Content-Type', 'image/png')
-        res.send(data.file)
-
-    })
-}
+        return res.status(200).send(fileInfos);
+    } catch (error) {
+        return res.status(500).send({
+            message: error.message,
+        });
+    }
+};

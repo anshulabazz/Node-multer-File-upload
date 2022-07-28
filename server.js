@@ -3,7 +3,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const app = express()
 var corsoptions = {
-    origin: 'http:localhost:'
+    origin: 'http://localhost:4200'
 }
 app.use(express.json())
 app.use(cors(corsoptions))
