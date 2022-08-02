@@ -1,7 +1,7 @@
 const util = require("util");
 const multer = require("multer");
 const { GridFsStorage } = require("multer-gridfs-storage");
-var storage = new GridFsStorage({
+/*var storage = new GridFsStorage({
     url: process.env.MONGODB_URL,
     file: (req, file) => {
         const match = ["image/png", "image/jpeg"];
@@ -18,11 +18,11 @@ var storage = new GridFsStorage({
 var uploadFiles = multer({ storage: storage }).single("file");
 var uploadFilesMiddleware = util.promisify(uploadFiles);
 module.exports = uploadFilesMiddleware;
+*/
 
 
 
-
-/*const upload = multer({
+const upload = multer({
     limit: {
         fileSize: 3000000
     },
@@ -34,4 +34,4 @@ module.exports = uploadFilesMiddleware;
     }
 
 })
-module.exports=upload*/
+module.exports=upload

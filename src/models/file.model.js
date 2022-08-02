@@ -1,18 +1,21 @@
 const mongoose = require('mongoose')
-const Images = mongoose.model('File-Nodejs', new mongoose.Schema({
+const express = require('express')
+const app= express()
+const imgsch = new mongoose.Schema({
     file: {
-        type: Buffer
+        data: Buffer,
+        contentType: String,
+        name: String
     },
     title: {
         type: String
     },
     description: {
         type: String
-    },
-    url: {
-        type:String
     }
 
-}))
+},{ timestamps: true })
+
+const Images = mongoose.model('File-Nodejs',imgsch)
 
 module.exports=Images

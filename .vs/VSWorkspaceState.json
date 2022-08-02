@@ -2,12 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\src",
-    "\\src\\config",
     "\\src\\controller",
+    "\\src\\images",
     "\\src\\middleware",
     "\\src\\models",
     "\\src\\router"
   ],
-  "SelectedNode": "\\src\\controller\\image.controller.js",
+  "SelectedNode": "\\src\\images\\132creative-presentation-ideas-dont-read-from-slides.png.png",
   "PreviewInSolutionExplorer": false
 }
