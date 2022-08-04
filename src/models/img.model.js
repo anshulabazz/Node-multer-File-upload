@@ -1,7 +1,6 @@
-var mongoose = require('mongoose');
-var express = require('express');
-var app = express();
-var img = new mongoose.Schema({
+const mongoose = require('mongoose');
+const fs = require('fs')
+const img = new mongoose.Schema({
     title: {
         type: String
     },
@@ -10,8 +9,11 @@ var img = new mongoose.Schema({
     },
     imagepath: {
         type: String
+    },
+    name: {
+        type:String
     }
 }, { timestamps: true });
-var Img = mongoose.model('File-Nodeimg', img);
-module.exports = Img;
-//# sourceMappingURL=img.model.js.map
+
+const Img = mongoose.model('File-Nodeimg', img);
+module.exports = Img

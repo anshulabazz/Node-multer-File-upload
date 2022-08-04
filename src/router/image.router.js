@@ -16,6 +16,7 @@ module.exports = function (app) {
     router.get('/getfile', controller.getListFiles)
     router.post('/up', upload.single('file'), controller.uploadf)
     router.get('/getall', controller.getAll)
+    router.delete('/delete/:id', controllers.deletebyid)
     router.get('/profile', controllers.yesget)
     router.post('/uploads', storage, controllers.postprofile)
     app.use('/', router)
