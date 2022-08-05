@@ -1,7 +1,7 @@
 module.exports = function (app) {
     const express = require('express')
     const router = express.Router()
-    const upload = require('../middleware/midde')
+    const storages = require('../middleware/midde')
     const storage = require('../middleware/mid')
     const controller = require('../controller/image.controller')
     const controllers = require('../controller/img.controller')
@@ -12,10 +12,10 @@ module.exports = function (app) {
         );
         next();
     });
-    router.post('/upload', controller.uploadFiles)
-    router.get('/getfile', controller.getListFiles)
-    router.post('/up', upload.single('file'), controller.uploadf)
-    router.get('/getall', controller.getAll)
+    router.post('/upload', storages, controller.multiupload)
+    router.put('/update/:id', storage, controller.updateimage)
+    router.get('/get/:id', controller.getbyid)
+    router.delete('/remove/:id', controller.deletesbyid)
     router.delete('/delete/:id', controllers.deletebyid)
     router.get('/profile', controllers.yesget)
     router.post('/uploads', storage, controllers.postprofile)

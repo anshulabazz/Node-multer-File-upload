@@ -1,66 +1,58 @@
-const upload = require("../middleware/midde");
 const Images = require('../models/file.model')
-const MongoClient = require("mongodb").MongoClient;
-const GridFSBucket = require("mongodb").GridFSBucket;
-const url = "mongodb://localhost:27017/"
-
-const baseUrl = "http://localhost:8080/files/";
-const mongoClient = new MongoClient(url);
-     exports.uploadFiles = async (req, res) => {
-        try {
-            await upload(req, res);
-            console.log(req.file);
-            if (req.file == undefined) {
-                return res.send({
-                    message: "You must select a file.",
-                });
-            }
-            return res.send({
-                message: "File has been uploaded.",
-            });
-        } catch (error) {
-            console.log(error);
-            return res.send({
-                message: "Error when trying upload image: ${error}",
-            });
+const url = 'http://localhost:8080/imagees/'
+const fs = require('fs')
+//For stroing Multiple file upload...
+exports.multiupload = async (req, res) => {
+    const { title, description } = req.body
+    let imagespaths = [];
+    req.files.forEach(e => {
+        const file = {
+            filename: url + e.filename,
+            name:e.filename
         }
-    };
-    
-exports.getListFiles = async (req, res) => {
-    try {
-        const database = mongoClient.db(process.env.database);
-        const images = database.collection(process.env.imgBucket + ".chunks");
-        const cursor =  await images.find({});
-        let fileInfos = [];
-        await cursor.forEach((doc) => {
-            fileInfos.push({
-                data: doc.data
-            });
-        });
+        imagespaths.push(file)
+    })
+    const image = new Images({
+        title, description, imagespaths
+    })
+    const data = await image.save()
+    res.status(200).send(data)
+}
+exports.updateimage = (req, res) => {
+    let title = req.body.title
+    let description = req.body.description
+    let imagespaths = [];
+    req.files.forEach(e => {
+        const file = {
+            filename: url + e.filename,
+            name: e.filename
+        }
+        imagespaths.push(file)
+    })
 
-        return res.status(200).send(fileInfos);
-    } catch (error) {
-        return res.status(500).send({
-            message: error.message,
-        });
-    }
-};
-exports.uploadf = (req, res) => {
-    const img = new Images({
-        file: { data: new Buffer.from(req.file.buffer, 'base64'), contentType: req.file.mimetype, name: req.file.originalname },
-        title: req.body.title,
-        description: req.body.description
+ 
+        
+    Images.findByIdAndUpdate(req.params.id, { title,description,imagespaths }).then((data) => {
+
+
+     res.status(200).send(data)
 
     })
-    img.save().then((data) => {
-        res.send(data)
-    }).catch(err => {
-        res.status(400).send('wrong')
+
+}
+exports.getbyid = (req, res) => {
+    Images.findById(req.params.id).then((data)=> {
+        res.status(200).send(data)
     })
 }
-exports.getAll = (req, res) => {
-    Images.find({}).exec((err, data) => {
-        res.set('Content-Type','image/jpeg')
-        res.status(200).send(data)
+//Delete multiple Files
+exports.deletesbyid = (req, res) => {
+    Images.findByIdAndDelete(req.params.id).then((data) => {
+        data.imagespaths.forEach(e => {
+            fs.unlink('./src/imagees/'+e.name, (err => {
+                if (err) { }                
+            }))
+        })
+        res.status(200).send('Dleted')
     })
 }
